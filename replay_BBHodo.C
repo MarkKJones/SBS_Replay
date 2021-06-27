@@ -31,11 +31,13 @@ void replay_bbhodo(int run_number = 124, uint nev = -1, uint nseg = 0)
   
   SBSBigBite* bigbite = new SBSBigBite("bb", "BigBite spectrometer" );
   SBSTimingHodoscope* hodotdc = new  SBSTimingHodoscope("hodotdc", "BigBite hodo");
+  hodotdc->SetModeTDC(SBSModeTDC::kTDC);
+  hodotdc->SetModeADC(SBSModeADC::kNone);
   SBSTimingHodoscope* hodoadc = new  SBSTimingHodoscope("hodoadc", "BigBite hodo");
   hodoadc->SetModeTDC(SBSModeTDC::kNone);
   hodoadc->SetModeADC(SBSModeADC::kADCSimple);
   //bigbite->AddDetector( new THaShower("ps", "BigBite preshower") );
-  // bigbite->AddDetector(hodotdc);
+  bigbite->AddDetector(hodotdc);
   bigbite->AddDetector(hodoadc);
   //bigbite->AddDetector( new SBSBBShower("sh", "BigBite shower") );
   gHaApps->Add(bigbite);
