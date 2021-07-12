@@ -44,4 +44,8 @@ bb.hodotdc.xyz    = -1.105  0.255  0.000
 ## Space between modules
 bb.hodotdc.dxdydz =  10.000  10.000  0.000
 
+bb.hodotdc.tdcGoodTimeCut = -50.
+
+bb.hodotdc.reftdcGoodTimeCut = -50.
+
 
