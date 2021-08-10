@@ -14,8 +14,8 @@ Block: CoarseReconstruct
 
 HitsPreShower          bb.ps.nhits>5
 HitsShower             bb.sh.nhits>5
-GoodPreShower          bb.ps.ngoodhits>5
-GoodShower             bb.sh.ngoodhits>5
+GoodPreShower          bb.ps.ngoodADChits>5
+GoodShower             bb.sh.ngoodADChits>5
 GoodEvent              GoodPreShower||GoodShower
 
 CoarseReconstruct_master GoodEvent

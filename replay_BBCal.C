@@ -12,6 +12,7 @@
 #include "THaVarList.h"
 
 #include "SBSBigBite.h"
+#include "SBSBBTotalShower.h"
 #include "SBSBBShower.h"
 #endif
 
@@ -30,8 +31,11 @@ void replay_bbcosmics(int run_number = 124, uint nev = -1, uint nseg = 0)
   
   SBSBigBite* bigbite = new SBSBigBite("bb", "BigBite spectrometer" );
   //bigbite->AddDetector( new THaShower("ps", "BigBite preshower") );
-  bigbite->AddDetector( new SBSBBShower("ps", "BigBite preshower") );
-  bigbite->AddDetector( new SBSBBShower("sh", "BigBite shower") );
+SBSBBTotalShower* ts= new SBSBBTotalShower("ts", "sh", "ps", "BigBite shower");
+  ts->SetDataOutputLevel(0);
+  bigbite->AddDetector( ts );
+  //  bigbite->AddDetector( new SBSBBShower("ps", "BigBite preshower") );
+  // bigbite->AddDetector( new SBSBBShower("sh", "BigBite shower") );
   gHaApps->Add(bigbite);
   
   // Ideal beam (perfect normal incidence and centering)
