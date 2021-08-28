@@ -2,6 +2,7 @@
 
 #ADC from calorimeter
 #block *
+block bb.trig.*
 block bb.ps.n*
 block bb.sh.n*
 block bb.ps.ngoodADChits

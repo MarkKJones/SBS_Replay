@@ -1,5 +1,17 @@
 # Sample outout definition file
 
 #ADC from calorimeter
-block sbs.hcal.*
+block sbs.hcal.a*
+block sbs.hcal.ped
+block sbs.hcal.t*
+block sbs.hcal.ped
+block sbs.hcal.*samps*
+block sbs.hcal.ledbit
+block sbs.hcal.ledcount
+block sbs.hcal.*Ref*
+block sbs.trig.*
+
+
+
+
 

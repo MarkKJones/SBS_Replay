@@ -18,6 +18,6 @@ GoodPreShower          bb.ps.ngoodADChits>5
 GoodShower             bb.sh.ngoodADChits>5
 GoodEvent              GoodPreShower||GoodShower
 
-CoarseReconstruct_master GoodEvent
+CoarseReconstruct_master 1
 
 

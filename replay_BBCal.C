@@ -6,6 +6,7 @@
 #include "TFile.h"
 
 #include "THaShower.h"
+#include "THaEvent.h"
 #include "THaEvData.h"
 #include "THaRun.h"
 #include "THaAnalyzer.h"
@@ -34,6 +35,9 @@ void replay_bbcosmics(int run_number = 124, uint nev = -1, uint nseg = 0)
 SBSBBTotalShower* ts= new SBSBBTotalShower("ts", "sh", "ps", "BigBite shower");
   ts->SetDataOutputLevel(0);
   bigbite->AddDetector( ts );
+SBSGenericDetector* trig= new SBSGenericDetector("trig","BigBite shower trig");
+ trig->SetModeADC(SBSModeADC::kWaveform);
+  bigbite->AddDetector( trig );
   //  bigbite->AddDetector( new SBSBBShower("ps", "BigBite preshower") );
   // bigbite->AddDetector( new SBSBBShower("sh", "BigBite shower") );
   gHaApps->Add(bigbite);
@@ -55,40 +59,32 @@ SBSBBTotalShower* ts= new SBSBBTotalShower("ts", "sh", "ps", "BigBite shower");
    const char* RunFileNamePattern = combined.c_str();
   vector<TString> pathList;
   pathList.push_back(".");
-  pathList.push_back(Form("%s/data","../.."));
+  pathList.push_back(Form("%s/data","/adaqfs/home/a-onl/sbs"));
 
-
-  THaRun* run = new THaRun( pathList, Form(RunFileNamePattern, run_number) );
-
-  run->SetDataRequired(7);//for the time being
-  
-  cout << "Number of events to replay (-1=all)? ";
-  if( nev > 0 )
+   THaAnalyzer* analyzer = new THaAnalyzer;
+THaEvent* event = new THaEvent;
+  THaRun* run = 0;
+  int seg = 0;
+  bool seg_ok = true;
+  while(seg_ok) {
+    TString data_fname;
+    data_fname = TString::Format("%s/bbshower_%d.evio.%d",getenv("DATA_DIR"),run_number,seg);
+ //new THaRun( pathList, Form(RunFileNamePattern, run_number) );
+    std::cout << "Looking for segment " << seg << " file " << data_fname.Data() << std::endl;
+    if( gSystem->AccessPathName(data_fname)) {
+      seg_ok = false;
+      std::cout << "Segment " << seg << " not found. Exiting" << std::endl;
+      continue;
+    }
+   run = new THaRun(data_fname);
     run->SetLastEvent(nev);
+
+  run->SetDataRequired(0);//for the time being
+   run->SetDate(TDatime());
   
-  //--- Set up any physics calculations we want to do ---
-
-  // Extract the reconstructed target quantities of the golden track
-  // Not really a physics calculation, but a convenience function.
-  // It effectively converts the L.tr.* variables, which are arrays, 
-  // to scalers L.gold.*
-
-  //gHaPhysics->Add( new THaGoldenTrack( "R.gold", "RHRS golden track", "R" ));
-
-  // Single-arm electron kinematics for the one spectrometer we have set up.
-  // We assume a carbon-12 target (12 AMU)
-  //gHaPhysics->Add( new THaPrimaryKine( "R.ekine", "RHRS electron kinematics",
-  //"R", 0.511e-3, 12*0.9315 ));
-
-  // Vertex position calculated from RHRS golden track and ideal beam
-  // (will poor resolution if raster is on)
-  //gHaPhysics->Add( new THaReactionPoint( "R.vx", "Vertex R", "R", "IB" ));
-
-  //--- Define what we want the analyzer to do ---
-  // The only mandatory items are the output definition and output file names
   
-  THaAnalyzer* analyzer = new THaAnalyzer;
 
+  analyzer->SetEvent( event );
   TString out_dir = gSystem->Getenv("OUT_DIR");
   if( out_dir.IsNull() )  out_dir = ".";
   TString out_file = out_dir + "/" + exp + Form("_%d_%d.root", run_number,nev);
@@ -110,6 +106,11 @@ SBSBBTotalShower* ts= new SBSBBTotalShower("ts", "sh", "ps", "BigBite shower");
   
 
   analyzer->Process(run);
+    // Cleanup this run segment
+    delete run;
+    
+    seg++; // Increment for next search
+ }
 
   // Clean up
 

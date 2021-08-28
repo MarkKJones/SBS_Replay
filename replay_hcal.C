@@ -39,6 +39,10 @@ SBSEArm *harm = new SBSEArm("sbs","Hadron Arm with HCal");
  SBSHCal* hcal =  new SBSHCal("hcal","HCAL");
   hcal->SetStoreRawHits(kTRUE);
   harm->AddDetector(hcal);
+SBSGenericDetector* trig= new SBSGenericDetector("trig","HCal trigs");
+ trig->SetModeADC(SBSModeADC::kWaveform);
+  harm->AddDetector( trig );
+
   gHaApps->Add(harm);
 
   //--- Set up the run we want to replay ---
@@ -48,14 +52,16 @@ SBSEArm *harm = new SBSEArm("sbs","Hadron Arm with HCal");
   TString exp = "hcal";
   // Create file name patterns.
   string firstname = "hcal_trigtest_%d";
+  //string firstname = "hcal_adc_tdc_%d";
   string endname = Form(".evio.%d",nseg);
+  //string endname = Form(".dat.%d",nseg);
   //string endname = Form(".evio");
   string combined(string(firstname)+endname);
    const char* RunFileNamePattern = combined.c_str();
   vector<TString> pathList;
   pathList.push_back(".");
   pathList.push_back(Form("%s/data","/adaqfs/home/a-onl/sbs"));
-
+  //pathList.push_back(Form("%s/data","/adaqfs/home/a-onl/skbarcus"));
 
   THaRun* run = new THaRun( pathList, Form(RunFileNamePattern, run_number) );
 
